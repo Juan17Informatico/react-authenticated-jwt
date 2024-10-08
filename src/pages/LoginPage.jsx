@@ -8,6 +8,7 @@ import { useAppDispatch } from "../store";
 import { loginUser } from "../store/authSlice";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 export const LoginPage = () => {
 
@@ -42,6 +43,12 @@ export const LoginPage = () => {
             
             if(response.type === "auth/loginUser/fulfilled" ) {
                 navigate("/dashboard");
+            }else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Credenciales incorrectas",
+                    showConfirmButton: false
+                  });
             }
             
         }); 

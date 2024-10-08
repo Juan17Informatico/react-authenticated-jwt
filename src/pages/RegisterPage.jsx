@@ -5,10 +5,21 @@ import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../store/authSlice";
 import { useAppDispatch } from "../store";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 export const RegisterPage = () => {
 
     const dispatch = useAppDispatch();
+
+    const { isLogged } = useSelector(state => state.auth);
+
+    useEffect(() => {
+        if(isLogged) {
+            navigate("/dashboard");
+        }
+    }, [isLogged]);
+
     const navigate = useNavigate();
     const initialValues = {
         name: "",
@@ -31,15 +42,18 @@ export const RegisterPage = () => {
             .required("La confirmación de la contraseña es requerida"),
     });
 
-    const onSubmit = (values, { }) => {
+    const onSubmit = (values, { setFieldError } ) => {
         console.log({ values });
 
         dispatch( registerUser(values) ).then( (response) => {
             
             if(response.type === "auth/registerUser/fulfilled" ) {
                 navigate("/dashboard");
-            }else {
-                
+            } else {
+                Object.entries(response.payload.errors).forEach(([key, value]) => {
+                    setFieldError( key, value[0]);
+                    
+                });
             }
             
         }); 
@@ -56,7 +70,7 @@ export const RegisterPage = () => {
                                 Crear Cuenta
                             </h1>
                             <Formik
-                                initialValues={{}}
+                                initialValues={initialValues}
                                 onSubmit={onSubmit}
                                 validationSchema={validationSchema}
                             >

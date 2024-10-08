@@ -14,21 +14,23 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (data) => {
     const response = await Api.post('/auth/login', data); 
 
     if( response.statusCode === 200) {
+        window.localStorage.setItem('token', response.dataResponse.token);
         return response.dataResponse;
     }
 
     throw new Error("Error");
 });
 
-export const registerUser = createAsyncThunk("auth/registerUser", async (data) => {
+export const registerUser = createAsyncThunk("auth/registerUser", async (data, thunkApi) => {
 
     const response = await Api.post("/auth/register", data);
 
     if(response.statusCode === 201) {
+        window.localStorage.setItem('token', response.dataResponse.token);
         return response.dataResponse;
     }
 
-    throw new Error("Error"); 
+    return thunkApi.rejectWithValue(response.dataResponse); 
 
 });
 

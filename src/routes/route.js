@@ -17,6 +17,7 @@ export const routes = [
     {
         path: '/dashboard',
         element: BaseDashBoard,
+        isProtected: true,
         children: [
             {
                 path: "",
